@@ -2,28 +2,20 @@
 
 namespace Weline\ElFinderFileManager\Block;
 
+use Weline\FileManager\Block\FileManager;
 use Weline\FileManager\Helper\Image;
 use Weline\Framework\View\Block;
 
-class ElFinder extends Block
+class ElFinder extends FileManager
 {
     protected string $_template = 'Weline_ElFinderFileManager::elfinder.html';
 
     public function render(): string
     {
-        $value = $this->getParseVarsParams('value');
-        $this->assign('value', $value);
-        $params = [
-            'isIframe' => true,
-            'targetElement' => $this->getData('target'),
-            'startPath' => $this->getData('path'),
-            'multi' => $this->getData('multi'),
-            'ext' => $this->getData('ext'),
-        ];
         if ($this->request->isBackend()) {
-            $connector = $this->request->getUrlBuilder()->getBackendUrl('elfinder/backend/connector/manager', $params, true);
+            $connector = $this->request->getUrlBuilder()->getBackendUrl('elfinder/backend/connector/manager', $this->getParams(), true);
         } else {
-            $connector = $this->request->getUrlBuilder()->getUrl('elfinder/frontend/connector/manager', $params, true);
+            $connector = $this->request->getUrlBuilder()->getUrl('elfinder/frontend/connector/manager', $this->getParams(), true);
         }
         $this->assign('connector', $connector);
         $pre = DEV ? 'dev' : 'prod';
@@ -68,14 +60,6 @@ class ElFinder extends Block
             $this->_cache->set($mainJsFileName, $mainJsUrl);
         }
         $this->assign('main_js', $mainJsUrl);
-        //                d($this->getData());
-        $value = $this->getData('value') ?: '';
-        $this->assign('value_items', Image::processImagesValuePreviewData($value, $this->getData('width'), $this->getData('height')));
         return parent::render();
-    }
-
-    public function doc()
-    {
-        return \Weline\FileManager\Taglib\FileManager::document();
     }
 }
