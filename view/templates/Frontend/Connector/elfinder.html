@@ -13,7 +13,7 @@
 	<script data-main="{{main_js}}"
 			src="@static(Weline_Frontend::frontend/lib/requirejs/2.3.6/requirejs.min.js)"></script>
 	<script>
-
+		var $ = parent.$;
 		let url = new URL(window.location.href);
 		let params = new URLSearchParams(url.search);
 		let startPath = params.get("startPath");
@@ -108,6 +108,7 @@
 						}
 						parentDocument.find(targetElement).val(existUrls + urls.join(','))
 					}
+					parentDocument.find(targetElement).trigger('input').trigger('change')
 					parentDocument.find(targetElement + '-close-modal').click()
 					for (var i = 0; i < file.length; i++) {
 						let f = file[i]

@@ -13,7 +13,7 @@
     <script data-main="{{main_js}}"
             src="@static(Weline_Backend::backend/lib/requirejs/2.3.6/requirejs.min.js)"></script>
     <script>
-
+        var $ = parent.$;
         let url = new URL(window.location.href);
         let params = new URLSearchParams(url.search);
         let startPath = params.get("startPath");
@@ -95,7 +95,7 @@
                     for (let i = 0; i < file.length; i++) {
                         file[i].path = file[i].url.replace(file[i].baseUrl, '');
                     }
-                    let parentDocument = $(window.parent.document)
+                    let parentDocument = parent.$(window.parent.document)
                     let preview = parentDocument.find(targetElement + '-preview')
                     if (!isMulti) {
                         preview.empty()
@@ -106,8 +106,9 @@
                         if (existUrls) {
                             existUrls = existUrls + ','
                         }
-                        parentDocument.find(targetElement).val(existUrls + urls.join(','))
+                        parentDocument.find(targetElement).focus().val(existUrls + urls.join(','))
                     }
+                    parentDocument.find(targetElement).trigger('input').trigger('change')
                     parentDocument.find(targetElement + '-close-modal').click()
                     for (var i = 0; i < file.length; i++) {
                         let f = file[i]
