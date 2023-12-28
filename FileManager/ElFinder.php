@@ -15,7 +15,9 @@ class ElFinder extends FileManager
 
     public function getConnector(array $params = []):string
     {
-        $params = array_merge($this->getData(), $params);
+        if(!$params){
+            $params = $this->getData();
+        }
         return $this->request->getUrlBuilder()->getBackendUrl('elfinder/backend/connector/manager', $params, true);
     }
 
