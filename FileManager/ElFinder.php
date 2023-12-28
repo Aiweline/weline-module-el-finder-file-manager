@@ -3,12 +3,20 @@
 namespace Weline\ElFinderFileManager\FileManager;
 
 use Weline\FileManager\FileManager;
+use Weline\Framework\Http\Request;
 
 class ElFinder extends FileManager
 {
+
     public static function name(): string
     {
         return 'elfinder';
+    }
+
+    public function getConnector(array $params = []):string
+    {
+        $params = array_merge($this->getData(), $params);
+        return $this->request->getUrlBuilder()->getBackendUrl('elfinder/backend/connector/manager', $params, true);
     }
 
     /**
