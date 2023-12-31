@@ -17,7 +17,11 @@
         let url = new URL(window.location.href);
         let params = new URLSearchParams(url.search);
         let startPath = params.get("startPath");
-        let targetElement = '#' + params.get("targetElement");
+        let targetId = '#' + params.get("target");
+        let closeId = null;
+        if (params.get("close") !== null || params.get("close") !== '') {
+            closeId = '#' + params.get("close");
+        }
         let preview = params.get("preview");
         let multi = params.get("multi");
         let ext = params.get("ext");
@@ -82,7 +86,7 @@
                         }
                     }
                     let isMulti = true;
-                    if (multi === '0' || multi === 'false' || multi === undefined || multi === null) {
+                    if (multi === 0 || multi === '0' || multi === 'false' || multi === undefined || multi === null) {
                         isMulti = false;
                     }
                     if (file.length > 1 && !isMulti) {
@@ -96,20 +100,22 @@
                         file[i].path = file[i].url.replace(file[i].baseUrl, '');
                     }
                     let parentDocument = parent.$(window.parent.document)
-                    let preview = parentDocument.find(targetElement + '-preview')
+                    let preview = parentDocument.find(targetId + '-preview')
                     if (!isMulti) {
                         preview.empty()
-                        parentDocument.find(targetElement).val(urls.join(','))
+                        parentDocument.find(targetId).val(urls.join(','))
                     } else {
                         // 读取本地再添加文件
-                        let existUrls = parentDocument.find(targetElement).val() ?? ''
+                        let existUrls = parentDocument.find(targetId).val() ?? ''
                         if (existUrls) {
                             existUrls = existUrls + ','
                         }
-                        parentDocument.find(targetElement).focus().val(existUrls + urls.join(','))
+                        parentDocument.find(targetId).focus().val(existUrls + urls.join(','))
                     }
-                    parentDocument.find(targetElement).trigger('input').trigger('change')
-                    parentDocument.find(targetElement + '-close-modal').click()
+                    parentDocument.find(targetId).trigger('input').trigger('change')
+                    if (parentDocument.find(targetId + '-close-modal').length > 0) {
+                        parentDocument.find(targetId + '-close-modal').click()
+                    }
                     for (var i = 0; i < file.length; i++) {
                         let f = file[i]
                         let fileJson = JSON.stringify(f).escapeString()
@@ -120,6 +126,9 @@
                                                     </div>`;
                         var html = wrapper.firstChild;
                         preview.append(html)
+                    }
+                    if (closeId !== undefined) {
+                        parentDocument.find(closeId).click()
                     }
                 },
                 // bootCalback calls at before elFinder boot up
