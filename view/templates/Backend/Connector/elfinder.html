@@ -14,18 +14,24 @@
             src="@static(Weline_Backend::backend/lib/requirejs/2.3.6/requirejs.min.js)"></script>
     <script>
         var $ = parent.$;
-        let url = new URL(window.location.href);
-        let params = new URLSearchParams(url.search);
-        let startPath = params.get("startPath");
-        let targetId = '#' + params.get("target");
-        let closeId = null;
-        if (params.get("close") !== null || params.get("close") !== '') {
-            closeId = '#' + params.get("close");
+        const urlParams = {};
+        let search = decodeURIComponent(window.location.search);
+        search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(match, key, value) {
+            urlParams[key] = value;
+        });
+        let startPath = urlParams.startPath;
+        let targetId = null;
+        if(urlParams.target){
+            targetId = '#'+urlParams.target;
         }
-        let preview = params.get("preview");
-        let multi = params.get("multi");
-        let ext = params.get("ext");
-        let size = params.get("size");
+        let closeId = null;
+        if(urlParams.close){
+            closeId = '#'+urlParams.close;
+        }
+        let preview = urlParams.preview;
+        let multi = urlParams.multi;
+        let ext = urlParams.ext;
+        let size = urlParams.size;
         define('elFinderConfig', {
             // elFinder options (REQUIRED)
             // Documentation for client options:

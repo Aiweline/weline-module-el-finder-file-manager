@@ -34,7 +34,7 @@ class Connector extends BackendController
                 $baseUrlArr = explode('?', $baseUrl);
                 $baseUrl = array_shift($baseUrlArr);
             }
-            $urlPath = $this->_url->getBackendUrl('elfinder/frontend/connector');
+            $urlPath = $this->_url->getBackendUrl('elfinder/backend/connector');
             $replaces = [
                 "baseUrl : 'js'" => "baseUrl : '{$baseUrl}'",
                 "php/connector.minimal.php" => "$urlPath",

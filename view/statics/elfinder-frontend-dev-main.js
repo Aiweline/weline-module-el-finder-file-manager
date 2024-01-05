@@ -122,7 +122,7 @@
 
 	// config of RequireJS (REQUIRED)
 	require.config({
-		baseUrl : '/Weline/ElFinderFileManager/view/statics/js',
+		baseUrl : '/weline/module-el-finder-file-manager/view/statics/js',
 		paths : {
 			'jquery'   : '//cdnjs.cloudflare.com/ajax/libs/jquery/'+(old? '1.12.4' : jqver)+'/jquery.min',
 			'jquery-ui': '//cdnjs.cloudflare.com/ajax/libs/jqueryui/'+uiver+'/jquery-ui.min',

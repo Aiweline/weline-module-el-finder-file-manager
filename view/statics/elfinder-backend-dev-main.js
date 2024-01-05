@@ -140,7 +140,7 @@
 			// Documentation for client options:
 			// https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
 			defaultOpts : {
-				url : 'http://weline.com/admin_123/elfinder/frontend/connector' // connector URL (REQUIRED)
+				url : 'http://weline.com/admin_123/elfinder/backend/connector' // connector URL (REQUIRED)
 				,commandsOptions : {
 					edit : {
 						extraOptions : {
