@@ -99,7 +99,7 @@
                         file.splice(0, file.length - 1)
                     }
                     var urls = $.map(file, function (f) {
-                        return f.url.replace(f.baseUrl, '');
+                        return decodeURIComponent(f.url.replace(f.baseUrl, ''));
                     });
                     // 处理path
                     for (let i = 0; i < file.length; i++) {
