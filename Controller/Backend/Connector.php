@@ -4,7 +4,7 @@ namespace Weline\ElfinderFileManager\Controller\Backend;
 
 use elFinder;
 use elFinderConnector;
-use Weline\ElFinderFileManager\Helper\MimeTypes;
+use Weline\FileManager\Helper\MimeTypes;
 use Weline\Framework\App\Controller\BackendController;
 use Weline\Framework\Http\Cookie;
 
@@ -13,29 +13,29 @@ class Connector extends BackendController
     public function __init()
     {
         parent::__init();
-        $pre = DEV ? 'dev' : 'prod';
+        $pre            = DEV ? 'dev' : 'prod';
         $mainJsFileName = 'elfinder-backend-' . $pre . '-main.js';
-        $mainJsUrl = $this->cache->get($mainJsFileName);
+        $mainJsUrl      = $this->cache->get($mainJsFileName);
         if (!$mainJsUrl) {
-            $ds = DS;
+            $ds     = DS;
             $mainJs = VENDOR_PATH . "studio-42{$ds}elfinder{$ds}main.default.js";
             if (!is_file($mainJs)) {
                 die(__('main.js无法加载！请确保你已通过Composer安装了studio-42/elfinder'));
             }
             $mainJsContent = file_get_contents($mainJs);
-            $mainJs = __DIR__ . DS . '..' . DS . '..' . DS . 'view' . DS . 'statics' . DS . $mainJsFileName;
-            $mainJsDir = dirname($mainJs);
+            $mainJs        = __DIR__ . DS . '..' . DS . '..' . DS . 'view' . DS . 'statics' . DS . $mainJsFileName;
+            $mainJsDir     = dirname($mainJs);
             if (!is_dir($mainJsDir)) {
                 mkdir($mainJsDir, 755, true);
             }
             file_put_contents($mainJs, $mainJsContent);
             $mainJsUrl = $this->getTemplate()->fetchTagSource('statics', 'Weline_ElFinderFileManager::/statics/' . $mainJsFileName);
-            $baseUrl = str_replace($mainJsFileName, 'js', $mainJsUrl);
+            $baseUrl   = str_replace($mainJsFileName, 'js', $mainJsUrl);
             if (str_contains($baseUrl, '?')) {
                 $baseUrlArr = explode('?', $baseUrl);
-                $baseUrl = array_shift($baseUrlArr);
+                $baseUrl    = array_shift($baseUrlArr);
             }
-            $urlPath = $this->_url->getBackendUrl('elfinder/backend/connector');
+            $urlPath  = $this->_url->getBackendUrl('elfinder/backend/connector');
             $replaces = [
                 "baseUrl : 'js'" => "baseUrl : '{$baseUrl}'",
                 "php/connector.minimal.php" => "$urlPath",
@@ -57,7 +57,15 @@ class Connector extends BackendController
     {
         //////////////////////////////////////////////////////////////////////
         // CONFIGS
-
+        // 读取支持的类型
+        $mimesExt = $this->request->getParam('ext');
+        $mimes    = ['image', 'text/plain'];
+        if ($mimesExt) {
+            $mimesExt = explode(',', $mimesExt);
+            foreach ($mimesExt as $k => $mimeExt) {
+                $mimes = array_merge($mimes, MimeTypes::getMimeTypes(trim($mimeExt)));
+            }
+        }
         // Enable FTP connector netmount
         $useFtpNetMount = true;
 
@@ -70,14 +78,6 @@ class Connector extends BackendController
         }
         if (!is_dir(ELFINDER_ROOT_PATH . '/.tmb')) {
             mkdir(ELFINDER_ROOT_PATH . '/.tmb', 755, true);
-        }
-        // 读取支持的类型
-        $mimesExt = $this->request->getParam('mimes');
-        $mimes = ['image', 'text/plain'];
-        if ($mimesExt) {
-            foreach ($mimesExt as $k=>$mimeExt) {
-                $mimes = array_merge( $mimes,MimeTypes::getMimeTypes(trim($mimeExt)));
-            }
         }
         // Volumes config
         // Documentation for connector options:
@@ -93,7 +93,7 @@ class Connector extends BackendController
                     'URL' => ELFINDER_ROOT_URL . '/', // URL to files (REQUIRED)
                     'trashHash' => 't1_Lw',                     // elFinder's hash of trash folder
                     'uploadDeny' => array('all'),                // All Mimetypes not allowed to upload
-                    'uploadAllow' => $mimes,#array('image', 'text/plain'),// Mimetype `image` and `text/plain` allowed to upload
+                    'uploadAllow' => $mimes,// Mimetype `image` and `text/plain` allowed to upload
                     'uploadOrder' => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
                     'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
                 ),
@@ -104,7 +104,7 @@ class Connector extends BackendController
                     'path' => ELFINDER_ROOT_PATH . '/.trash/',
                     'tmbURL' => ELFINDER_ROOT_URL . '/.trash/.tmb/',
                     'uploadDeny' => array('all'),                // Recomend the same settings as the original volume that uses the trash
-                    'uploadAllow' => $mimes,#array('image', 'text/plain'),// Same as above
+                    'uploadAllow' => $mimes,// Same as above
                     'uploadOrder' => array('deny', 'allow'),      // Same as above
                     'accessControl' => 'access',                    // Same as above
                 )

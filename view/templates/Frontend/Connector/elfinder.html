@@ -38,7 +38,7 @@
             // https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
             defaultOpts: {
                 cssAutoLoad: ['themes/windows-10/css/theme.css'],
-                url: '@url("*/frontend/connector")?startPath=' + startPath, // or connector.maximal.php : connector URL (REQUIRED)
+                url: '@url("*/frontend/connector")?startPath=' + startPath+'&ext='+ext+'&size='+size+'&multi='+multi, // or connector.maximal.php : connector URL (REQUIRED)
                 commandsOptions: {
                     getfile: {multiple: true},
                     edit: {
@@ -61,7 +61,9 @@
                         officeOnlineMimes: ['application/vnd.ms-office', 'application/msword', 'application/vnd.ms-word', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.presentation']
                     }
                 },
-
+                onlyMimes: ext.split(',').map(function (e) {
+                    return e.trim();
+                }),
                 getFileCallback: function (file, fm) {
                     // 大小限制
                     if (size) {

@@ -4,7 +4,7 @@ namespace Weline\ElFinderFileManager\Controller\Frontend;
 
 use elFinder;
 use elFinderConnector;
-use Weline\ElFinderFileManager\Helper\MimeTypes;
+use Weline\FileManager\Helper\MimeTypes;
 use Weline\Framework\App\Controller\FrontendController;
 use Weline\Framework\Http\Cookie;
 
@@ -57,7 +57,15 @@ class Connector extends FrontendController
     {
         //////////////////////////////////////////////////////////////////////
         // CONFIGS
-
+        // 读取支持的类型
+        $mimesExt = $this->request->getParam('ext');
+        $mimes    = ['image', 'text/plain'];
+        if ($mimesExt) {
+            $mimesExt = explode(',', $mimesExt);
+            foreach ($mimesExt as $k => $mimeExt) {
+                $mimes = array_merge($mimes, MimeTypes::getMimeTypes(trim($mimeExt)));
+            }
+        }
         // Enable FTP connector netmount
         $useFtpNetMount = true;
 

@@ -38,7 +38,7 @@
             // https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
             defaultOpts: {
                 cssAutoLoad: ['themes/windows-10/css/theme.css'],
-                url: '@backend-url("*/backend/connector")?startPath=' + startPath, // or connector.maximal.php : connector URL (REQUIRED)
+                url: '@backend-url("*/backend/connector")?startPath=' + startPath+'&ext='+ext+'&size='+size+'&multi='+multi, // or connector.maximal.php : connector URL (REQUIRED)
                 commandsOptions: {
                     getfile: {multiple: true},
                     edit: {
@@ -160,7 +160,7 @@
             managers: {
                 // 'DOM Element ID': { /* elFinder options of this DOM Element */ }
                 'elfinder': {}
-            }
+            },
         });
     </script>
 </head>
