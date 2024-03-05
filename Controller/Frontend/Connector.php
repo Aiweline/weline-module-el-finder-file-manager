@@ -4,6 +4,7 @@ namespace Weline\ElFinderFileManager\Controller\Frontend;
 
 use elFinder;
 use elFinderConnector;
+use Weline\ElFinderFileManager\Helper\MimeTypes;
 use Weline\Framework\App\Controller\FrontendController;
 use Weline\Framework\Http\Cookie;
 
@@ -67,8 +68,16 @@ class Connector extends FrontendController
         if (!is_dir(ELFINDER_ROOT_PATH . '/.trash/.tmb/')) {
             mkdir(ELFINDER_ROOT_PATH . '/.trash/.tmb/', 755, true);
         }
-        if (!is_dir(ELFINDER_ROOT_URL . '/.tmb')) {
-            mkdir(ELFINDER_ROOT_URL . '/.tmb', 755, true);
+        if (!is_dir(ELFINDER_ROOT_PATH . '/.tmb')) {
+            mkdir(ELFINDER_ROOT_PATH . '/.tmb', 755, true);
+        }
+        // 读取支持的类型
+        $mimesExt = $this->request->getParam('mimes');
+        $mimes = ['image', 'text/plain'];
+        if ($mimesExt) {
+            foreach ($mimesExt as $k=>$mimeExt) {
+                $mimes = array_merge( $mimes,MimeTypes::getMimeTypes(trim($mimeExt)));
+            }
         }
         // Volumes config
         // Documentation for connector options:
@@ -84,7 +93,7 @@ class Connector extends FrontendController
                     'URL' => ELFINDER_ROOT_URL . '/', // URL to files (REQUIRED)
                     'trashHash' => 't1_Lw',                     // elFinder's hash of trash folder
                     'uploadDeny' => array('all'),                // All Mimetypes not allowed to upload
-                    'uploadAllow' => array('image', 'text/plain'),// Mimetype `image` and `text/plain` allowed to upload
+                    'uploadAllow' => $mimes,#array('image', 'text/plain'),// Mimetype `image` and `text/plain` allowed to upload
                     'uploadOrder' => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
                     'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
                 ),
@@ -95,7 +104,7 @@ class Connector extends FrontendController
                     'path' => ELFINDER_ROOT_PATH . '/.trash/',
                     'tmbURL' => ELFINDER_ROOT_URL . '/.trash/.tmb/',
                     'uploadDeny' => array('all'),                // Recomend the same settings as the original volume that uses the trash
-                    'uploadAllow' => array('image', 'text/plain'),// Same as above
+                    'uploadAllow' => $mimes,#array('image', 'text/plain'),// Same as above
                     'uploadOrder' => array('deny', 'allow'),      // Same as above
                     'accessControl' => 'access',                    // Same as above
                 )
