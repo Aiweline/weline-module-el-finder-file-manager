@@ -32,6 +32,7 @@
         let multi = urlParams.multi;
         let ext = urlParams.ext;
         let size = urlParams.size;
+        let setAttr = urlParams.setAttr;
         define('elFinderConfig', {
             // elFinder options (REQUIRED)
             // Documentation for client options:
@@ -111,14 +112,26 @@
                     let preview = parentDocument.find(targetId + '-preview')
                     if (!isMulti) {
                         preview.empty()
-                        parentDocument.find(targetId).val(urls.join(','))
+                        switch (setAttr){
+                            case 'text':
+                                parentDocument.find(targetId).focus().text(urls.join(',')).trigger('change').trigger('input');
+                                break;
+                            default:
+                                parentDocument.find(targetId).focus().val(urls.join(',')).trigger('change').trigger('input');
+                        }
                     } else {
                         // 读取本地再添加文件
                         let existUrls = parentDocument.find(targetId).val() ?? ''
                         if (existUrls) {
                             existUrls = existUrls + ','
                         }
-                        parentDocument.find(targetId).focus().val(existUrls + urls.join(','))
+                        switch (setAttr){
+                            case 'text':
+                                parentDocument.find(targetId).focus().text(existUrls + urls.join(',')).trigger('change').trigger('input');
+                                break;
+                            default:
+                                parentDocument.find(targetId).focus().val(existUrls + urls.join(',')).trigger('change').trigger('input');
+                        }
                     }
                     parentDocument.find(targetId).trigger('input').trigger('change')
                     if (parentDocument.find(targetId + '-close-modal').length > 0) {
