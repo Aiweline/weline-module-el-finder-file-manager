@@ -32,13 +32,14 @@
         let multi = urlParams.multi;
         let ext = urlParams.ext;
         let size = urlParams.size;
+        let setAttr = urlParams.setAttr;
         define('elFinderConfig', {
             // elFinder options (REQUIRED)
             // Documentation for client options:
             // https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
             defaultOpts: {
                 cssAutoLoad: ['themes/windows-10/css/theme.css'],
-                url: '@url("*/frontend/connector")?startPath=' + startPath, // or connector.maximal.php : connector URL (REQUIRED)
+                url: '@url("*/frontend/connector")?startPath=' + startPath+'&ext='+ext+'&size='+size+'&multi='+multi, // or connector.maximal.php : connector URL (REQUIRED)
                 commandsOptions: {
                     getfile: {multiple: true},
                     edit: {
@@ -61,7 +62,9 @@
                         officeOnlineMimes: ['application/vnd.ms-office', 'application/msword', 'application/vnd.ms-word', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.presentation']
                     }
                 },
-
+                onlyMimes: ext.split(',').map(function (e) {
+                    return e.trim();
+                }),
                 getFileCallback: function (file, fm) {
                     // 大小限制
                     if (size) {
@@ -109,14 +112,26 @@
                     let preview = parentDocument.find(targetId + '-preview')
                     if (!isMulti) {
                         preview.empty()
-                        parentDocument.find(targetId).val(urls.join(','))
+                        switch (setAttr){
+                            case 'text':
+                                parentDocument.find(targetId).focus().text(urls.join(',')).trigger('change').trigger('input');
+                                break;
+                            default:
+                                parentDocument.find(targetId).focus().val(urls.join(',')).trigger('change').trigger('input');
+                        }
                     } else {
                         // 读取本地再添加文件
                         let existUrls = parentDocument.find(targetId).val() ?? ''
                         if (existUrls) {
                             existUrls = existUrls + ','
                         }
-                        parentDocument.find(targetId).focus().val(existUrls + urls.join(','))
+                        switch (setAttr){
+                            case 'text':
+                                parentDocument.find(targetId).focus().text(existUrls + urls.join(',')).trigger('change').trigger('input');
+                                break;
+                            default:
+                                parentDocument.find(targetId).focus().val(existUrls + urls.join(',')).trigger('change').trigger('input');
+                        }
                     }
                     parentDocument.find(targetId).trigger('input').trigger('change')
                     if (parentDocument.find(targetId + '-close-modal').length > 0) {
